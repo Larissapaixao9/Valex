@@ -61,15 +61,6 @@ responsável pela criação, recarga, ativação, assim como o processamento das
 | `id`      | `number` | **Obrigatório**. O ID do cartão |
 |`password `     |`string`| valor da senha deve ser digitada com string|
 
-#### Recarga de cartão
-
-```http
-  POST /recharge
-```
-| Parâmetro   | Tipo       | Descrição                                   |
-| :---------- | :--------- | :------------------------------------------ |
-| `id`      | `number` | **Obrigatório**. O ID do cartão |
-|`rechargeValue `     |`number`| valor da recarga maior que zero|
 
 #### Recarga de cartão
 
