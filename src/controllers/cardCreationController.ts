@@ -1,6 +1,7 @@
 import express from 'express'
 import Joi from 'joi'
 import * as services from '../services/cardCreationService'
+import * as companyService from '../services/companyService'
 import { Request, Response } from 'express'
 //import { validatecardtype } from '../services/cardCreationService'
 
@@ -28,6 +29,7 @@ export async function createCard(req:Request, res:Response){
         return res.status(422).send(error)
    }
    try {
+    const verifyApiKey = await companyService.validateApiKey(apiKey)
     const r = await services.getEmployee(id,typeOfCards);
     console.log(r)
      return res.sendStatus(200)
