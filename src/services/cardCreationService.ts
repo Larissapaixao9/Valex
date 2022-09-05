@@ -8,14 +8,12 @@ import cryptr from 'cryptr'
 import bcrypt from 'bcrypt'
 import { mapObjectToUpdateQuery } from '../../valex/utils/sqlUtils';
 
-
 export async function validatecardtype(typeofcard:string){
     if(typeofcard!='health' && typeofcard!='groceries' && typeofcard!='restaurants' && typeofcard!='transport' && typeofcard!='education' && typeofcard!='health' ){
         return 0;
     }
     else return 1;
 }
-
 
 export async function getEmployee(id:number,typeofcard:string){
     const employeeRowCount =  await cardRepository.findEmployees(id,typeofcard);
@@ -41,8 +39,7 @@ export async function VerifyDuplicateCardType(id:number,typeofcard:string){
         let cvc = faker.random.numeric(3);
         const Cryptr = new cryptr('myTotallySecretKey');
         const encriptedCvc = Cryptr.encrypt(cvc);
-        console.log(encriptedCvc)
-        console.log(cvc)
+        console.log(`Numero do cvc:${cvc}`)
         console.log(cardNumber)
         const employeeName = await cardRepository.getEmployeeName(id);
         console.log(employeeName)
@@ -60,6 +57,7 @@ export async function VerifyDuplicateCardType(id:number,typeofcard:string){
         if(isCardgenerated==true){
             console.log('cartão gerado')
             return { cvc, CardEmployeeNameFormatted }
+            //return cvc
         }
         else{
             throw Error('não foi possivel criar cartão')

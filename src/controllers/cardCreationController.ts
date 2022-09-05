@@ -3,36 +3,20 @@ import Joi from 'joi'
 import * as services from '../services/cardCreationService'
 import * as companyService from '../services/companyService'
 import { Request, Response } from 'express'
-//import { validatecardtype } from '../services/cardCreationService'
-
-const schema_for_cardCreation = Joi.object({
-      // allow only certain values
-      id:Joi.required(),
-      typeOfCards: Joi.string().valid('groceries','restaurants','transport','education','health').required(),
-  })
-
-  const schema_for_unlockCard = Joi.object({
-    id:Joi.number().required(),
-    cvc:Joi.number().required()
-  })
-
+import * as cardCreationValidations from '../validations/cardCreationValidations'
 
 export async function createCard(req:Request, res:Response){
-    const {typeOfCards}=req.body;
+    const {typeOfCards, id}=req.body;
     const apiKey = req.headers['x-api-key'] as string;
 
-
-    const{ id } = req.body;
-    const validation = schema_for_cardCreation.validate(req.body);
-    const { error } = validation;
-    if(error){
-        return res.status(422).send(error)
-   }
    try {
     const verifyApiKey = await companyService.validateApiKey(apiKey)
+    const validateCardCreation = await cardCreationValidations.cardCreationValidations(id,typeOfCards)
     const r = await services.getEmployee(id,typeOfCards);
     console.log(r)
-     return res.sendStatus(200)
+     return res.status(200).send({
+        "message":"cartão criado com sucesso. Mais detalhes no console"
+     })
     
    } catch (error) {
     console.log(error)
@@ -46,7 +30,6 @@ export async function unlockCard(req:Request,res:Response){
         const cardRowCount = await services.findCard(id,cvc)
         console.log(cardRowCount)
 
-        //const existinfCardById = await services.findCardById(id)
         return res.status(200).send(cardRowCount)
         
     } catch (error) {
@@ -64,7 +47,6 @@ export async function getTransactions(req:Request,res:Response){
 
         const allTransactions = await services.getTransactions(id);
         console.log(allTransactions)
-        //const getRecharges = await services
         const rechargeData = await services.getRechargesData(id);
         const paymentsData = await services.getPaymentsData(id);
 
@@ -114,7 +96,6 @@ export async function unblockCard(req:Request,res:Response){
             "resultado":"cartão desbloqueado com sucesso"
         })
 
-        
     } catch (error) {
         console.log(error);
         return res.status(500).send(error)
